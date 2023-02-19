@@ -52,7 +52,7 @@ spec:
         tls:
           - hosts:
               - *host
-            #secretName: libreddit-tls
+            secretName: libreddit-tls
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
