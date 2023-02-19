@@ -30,8 +30,8 @@ spec:
     crds:
       enabled: true
     pspEnable: false
-    monitoring:
-      enabled: true
+    # monitoring:
+    #   enabled: true
     resources:
       requests:
         cpu: 10m
