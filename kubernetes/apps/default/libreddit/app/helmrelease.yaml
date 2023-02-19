@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -15,17 +14,13 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  #maxHistory: 3
   install:
     createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
-    #cleanupOnFail: true
     remediation:
-      retries: 5
-  # uninstall:
-  #   keepHistory: false
+      retries: 3
   values:
     controller:
       replicas: 2
@@ -39,25 +34,25 @@ spec:
       main:
         ports:
           http:
-            port: 8080
+            port: &port 8080
     ingress:
       main:
         enabled: true
         ingressClassName: nginx
         annotations:
-          #external-dns.alpha.kubernetes.io/target: ipv4.devbu.io
           cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
           external-dns.home.arpa/enabled: "true"
           hajimari.io/icon: simple-icons:reddit
         hosts:
-          - host: &host "{{ .Release.Name }}.goatfarmer.uk" #TODO .${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
               - *host
+            secretName: libreddit-tls
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
