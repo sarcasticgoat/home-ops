@@ -117,15 +117,3 @@
         path: "{{ k3s_server_manifests_dir }}/{{ item.filename }}"
         state: absent
       loop: "{{ k3s_server_manifests_urls | default([]) }}"
-    - name: Fix DNS for nodes
-      block:
-        - name: Stop and disable service which messes with DNS
-          service:
-            name: "systemd-resolved"
-            state: stopped
-            enabled: false
-        - name: Setup nameserver
-          blockinfile:
-            dest: /etc/resolv.conf
-            block: |
-              nameserver 192.168.101.1 # TODO may need to change this in the future if I migrate DNS/router - pfsense won't let me disable DNS search suffix
