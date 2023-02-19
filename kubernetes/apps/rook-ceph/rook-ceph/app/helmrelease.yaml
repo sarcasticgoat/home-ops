@@ -15,23 +15,23 @@ spec:
         kind: HelmRepository
         name: rook-ceph
         namespace: flux-system
-  maxHistory: 3
+  # maxHistory: 3
   install:
     createNamespace: true
     remediation:
       retries: 3
   upgrade:
-    cleanupOnFail: true
+    # cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
+  # uninstall:
+  #   keepHistory: false
   values:
     crds:
       enabled: true
     pspEnable: false
-    # monitoring:
-    #   enabled: true
+    monitoring:
+      enabled: true
     resources:
       requests:
         cpu: 10m
