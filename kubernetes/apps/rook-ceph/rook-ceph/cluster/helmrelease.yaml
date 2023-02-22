@@ -46,8 +46,8 @@ spec:
           - hosts:
               - *host
             secretName: rook-ceph-cluster-tls
-    # toolbox:
-    #   enabled: true
+    toolbox:
+      enabled: true
     configOverride: |
       [global]
       bdev_enable_discard = true
