@@ -2,8 +2,7 @@
 .DS_Store
 Thumbs.db
 # k8s
-kubeconfig
-kubeconfig.old
+kubeconfig*
 # vscode-sops
 .decrypted~*.yaml
 .config.env
@@ -19,3 +18,4 @@ xanmanning.k3s*
 terraform.tfstate*
 # Misc
 setup.txt
+*.workspace
