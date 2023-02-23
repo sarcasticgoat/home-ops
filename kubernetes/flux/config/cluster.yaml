@@ -8,7 +8,7 @@ spec:
   interval: 30m
   ref:
     branch: main
-  url: "https://github.com/sarcasticgoat/test-flux-cluster"
+  url: "https://github.com/sarcasticgoat/home-ops"
   ignore: |
     # exclude all
     /*
