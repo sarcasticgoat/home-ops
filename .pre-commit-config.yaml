@@ -16,3 +16,4 @@ repos:
     rev: v2.1.0
     hooks:
       - id: forbid-secrets
+      #sops --encrypt --age $(cat $SOPS_AGE_KEY_FILE |grep -oP "public key: \K(.*)") --encrypted-regex '^(data|stringData)$' --in-place $PATH_TO_SECRET
