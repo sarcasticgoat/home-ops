@@ -20,27 +20,30 @@ database:
 #     device: usb
 
 ffmpeg:
-  global_args: ["-hide_banner", "-loglevel", "warning"]
-  hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
-  # https://github.com/blakeblackshear/frigate/issues/3296
-  output_args:
-    record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -map 0:v:0 -map 0:a:0 -c copy
+  hwaccel_args: preset-intel-qsv-h264
+
+# ffmpeg:
+#   global_args: ["-hide_banner", "-loglevel", "warning"]
+#   hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
+#   # https://github.com/blakeblackshear/frigate/issues/3296
+#   output_args:
+#     record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -map 0:v:0 -map 0:a:0 -c copy
 
 snapshots:
   enabled: true
   timestamp: false
   bounding_box: true
   retain:
-    default: 7
+    default: 14
 
 record:
-  enabled: false # TODO enable
+  enabled: true
   retain:
     days: 3
     mode: all
   events:
     retain:
-      default: 7
+      default: 14
       mode: active_objects
 
 objects:
@@ -57,16 +60,20 @@ objects:
 go2rtc:
   streams:
     frontporch_main:
-      - rtsp://frigate:{FRIGATE_CAM01_PASSWORD}@cam01.{CAMERA_DOMAIN}:554#backchannel=0
+      - rtsp://k8s:{FRIGATE_FRONTPORCH_CAMERA_PASSWORD}@{FRIGATE_FRONTPORCH_CAMERA_HOST}:554#backchannel=0
     frontporch_substream:
-      - rtsp://frigate:{FRIGATE_CAM01_PASSWORD}@cam01.{CAMERA_DOMAIN}:554/cam/realmonitor?channel=1&subtype=0
+      - rtsp://k8s:{FRIGATE_FRONTPORCH_CAMERA_PASSWORD}@{FRIGATE_FRONTPORCH_CAMERA_HOST}:554/cam/realmonitor?channel=1&subtype=0
 
 cameras:
-  frontporch_cam01:
+  frontporch:
     ffmpeg:
       output_args:
-        # record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
+        record: preset-record-generic-audio-copy
       inputs:
+        - path: rtsp://127.0.0.1:8554/frontporch_main?video=copy&audio=aac
+          input_args: preset-rtsp-restream
+          roles:
+            - record
         - path: rtsp://127.0.0.1:8554/frontporch_substream?video=copy
           input_args: preset-rtsp-restream
           roles:
@@ -77,40 +84,46 @@ cameras:
       #       # - detect
       #       - rtmp
     detect:
-      width: 2592
-      height: 1944
+      width: 720
+      height: 576
+      fps: 15
       enabled: true
-      fps: 10
-      max_disappeared: 25
-    zones:
-      frontdoor:
-        coordinates: 1966,878,2173,802,2356,270,2585,403,2592,814,2585,1246,2578,1241
-        objects:
-          - person
-      frontporch:
-        coordinates: 165,1374,419,1942,2583,1942,2581,1250,2015,904,1713,639,89,1129
-        objects:
-          - person
-      frontyard:
-        coordinates: 82,1120,0,616,876,394,1627,343,2014,332,2283,377,2167,794,1977,861,1715,643,1030,840
-        objects:
-          - person
-      frontstreet:
-        coordinates: 11,611,0,359,528,205,1236,169,1789,189,2144,245,2317,288,2306,309,2286,379,1994,340,1527,353,1012,387
-        objects:
-          - person
-          - car
-    record:
-      enabled: true
-      retain:
-        days: 0
-      events:
-        # max_seconds: 300
-        pre_capture: 5
-        post_capture: 5
-        objects:
-          - person
-        retain:
-          default: 10
-          objects:
-            person: 30
+
+    # detect:
+    #   width: 2592
+    #   height: 1944
+    #   enabled: true
+    #   fps: 10
+    #   max_disappeared: 25
+    # zones:
+    #   frontdoor:
+    #     coordinates: 1966,878,2173,802,2356,270,2585,403,2592,814,2585,1246,2578,1241
+    #     objects:
+    #       - person
+    #   frontporch:
+    #     coordinates: 165,1374,419,1942,2583,1942,2581,1250,2015,904,1713,639,89,1129
+    #     objects:
+    #       - person
+    #   frontyard:
+    #     coordinates: 82,1120,0,616,876,394,1627,343,2014,332,2283,377,2167,794,1977,861,1715,643,1030,840
+    #     objects:
+    #       - person
+    #   frontstreet:
+    #     coordinates: 11,611,0,359,528,205,1236,169,1789,189,2144,245,2317,288,2306,309,2286,379,1994,340,1527,353,1012,387
+    #     objects:
+    #       - person
+    #       - car
+    # record:
+    #   enabled: true
+    #   retain:
+    #     days: 0
+    #   events:
+    #     # max_seconds: 300
+    #     pre_capture: 5
+    #     post_capture: 5
+    #     objects:
+    #       - person
+    #     retain:
+    #       default: 10
+    #       objects:
+    #         person: 30
