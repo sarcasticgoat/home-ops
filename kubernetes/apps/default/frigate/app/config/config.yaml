@@ -78,15 +78,10 @@ cameras:
           input_args: preset-rtsp-restream
           roles:
             - detect
-      # inputs:
-      #   - path: rtsp://frigate:{FRIGATE_CAM01_PASSWORD}@cam01.{CAMERA_DOMAIN}:554/cam/realmonitor?channel=1&subtype=0
-      #     roles:
-      #       # - detect
-      #       - rtmp
     detect:
-      width: 720
-      height: 576
-      fps: 15
+      width: 1280
+      height: 720
+      fps: 10
       enabled: true
 
     # detect:

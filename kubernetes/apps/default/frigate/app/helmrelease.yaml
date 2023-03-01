@@ -111,7 +111,7 @@ spec:
         mountPath: /config/config.yml
         readOnly: true
       media:
-        enabled: false # TODO enable
+        enabled: true
         existingClaim: frigate-nfs
         mountPath: /media
       cache:
@@ -120,12 +120,12 @@ spec:
         medium: Memory
         sizeLimit: 4Gi
         mountPath: /dev/shm
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/bus/usb
-        hostPathType: Directory
-        mountPath: /dev/bus/usb
+      # usb:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /dev/bus/usb
+      #   hostPathType: Directory
+      #   mountPath: /dev/bus/usb
     nodeSelector:
       node-role.kubernetes.io/worker: "true"
       # google.feature.node.kubernetes.io/coral: "true"

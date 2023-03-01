@@ -10,8 +10,8 @@ spec:
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: expanse.turbo.ac
-    path: /eros/Apps/Frigate
+    server: {FRIGATE_NAS_HOST}
+    path: /mnt/user/NFS
   # Note: The first two options are strictly for NFSv4.2
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
 ---
