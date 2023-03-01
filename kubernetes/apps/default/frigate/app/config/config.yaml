@@ -60,7 +60,7 @@ objects:
 go2rtc:
   streams:
     frontporch_main:
-      - rtsp://k8s:{FRIGATE_FRONTPORCH_CAMERA_PASSWORD}@{FRIGATE_FRONTPORCH_CAMERA_HOST}:554#backchannel=0
+      - rtsp://k8s:{FRIGATE_FRONTPORCH_CAMERA_PASSWORD}@{FRIGATE_FRONTPORCH_CAMERA_HOST}:554
     frontporch_substream:
       - rtsp://k8s:{FRIGATE_FRONTPORCH_CAMERA_PASSWORD}@{FRIGATE_FRONTPORCH_CAMERA_HOST}:554/cam/realmonitor?channel=1&subtype=0
 
