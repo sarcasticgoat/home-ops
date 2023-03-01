@@ -10,7 +10,7 @@ spec:
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: "${FRIGATE_NAS_HOST}"
+    server: nas.fakedomain.local # substitution breaks this so I set up a DNS override on DNS resolver
     path: /mnt/user/NFS
   # Note: The first two options are strictly for NFSv4.2
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
