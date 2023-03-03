@@ -29,14 +29,17 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+
   values:
     controller:
       type: statefulset
       annotations:
         reloader.stakater.com/auto: "true"
+
     image:
       repository: ghcr.io/blakeblackshear/frigate
-      tag: 0.12.0-beta8
+      tag: 0.12.0-beta7
+
     env:
       TZ: America/New_York
       LIBVA_DRIVER_NAME: i965
@@ -50,9 +53,11 @@ spec:
           secretKeyRef:
             name: emqx-config
             key: user_1_password
+
     envFrom:
       - secretRef:
           name: frigate-secrets
+
     service:
       main:
         ports:
@@ -61,6 +66,7 @@ spec:
           rtsp:
             enabled: true
             port: 8554
+
     probes:
       liveness: &probe
         enabled: true
@@ -75,7 +81,8 @@ spec:
           failureThreshold: 3
       readiness: *probe
       startup:
-        enabled: false
+        enabled: true
+
     ingress:
       main:
         enabled: true
@@ -94,14 +101,17 @@ spec:
           - hosts:
               - *host
             secretName: frigate-tls
+
     securityContext:
       privileged: true
+
     volumeClaimTemplates:
-      - name: config
+      - name: data
         mountPath: /data
         accessMode: ReadWriteOnce
         size: 5Gi
         storageClass: ceph-block
+
     persistence:
       config-file:
         enabled: true
@@ -114,7 +124,7 @@ spec:
         enabled: true
         type: nfs
         server: ${NAS_HOSTNAME}
-        path: /mnt/user/NFS/frigate
+        path: /mnt/zpool-mirror/frigate # /mnt/user/NFS/frigate
         mountPath: /media
       cache:
         enabled: true
@@ -128,6 +138,7 @@ spec:
       #   hostPath: /dev/bus/usb
       #   hostPathType: Directory
       #   mountPath: /dev/bus/usb
+
     nodeSelector:
       node-role.kubernetes.io/worker: "true"
       # google.feature.node.kubernetes.io/coral: "true"
@@ -140,11 +151,12 @@ spec:
                 - key: node-role.kubernetes.io/master
                   operator: Exists
             topologyKey: kubernetes.io/hostname
+
     resources:
       requests:
-        cpu: 10m
-        memory: 1000Mi
+        cpu: 323m
+        memory: 443M
         gpu.intel.com/i915: "1"
       limits:
-        memory: 6000Mi
+        memory: 886M
         gpu.intel.com/i915: "1"
