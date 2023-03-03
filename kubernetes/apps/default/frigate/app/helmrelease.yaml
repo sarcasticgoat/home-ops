@@ -112,7 +112,9 @@ spec:
         readOnly: true
       media:
         enabled: true
-        existingClaim: frigate-nfs
+        type: nfs
+        server: ${NAS_HOSTNAME}
+        path: /mnt/user/NFS
         mountPath: /media
       cache:
         enabled: true

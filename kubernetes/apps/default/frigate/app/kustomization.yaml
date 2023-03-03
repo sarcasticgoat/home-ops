@@ -6,7 +6,7 @@ namespace: default
 resources:
   - ./frigate-secrets.sops.yaml
   # - ./nodefeaturerule.yaml
-  - ./nfs-pvc.yaml
+  # - ./nfs-pvc.yaml
   - ./helmrelease.yaml
   # - ./volsync.yaml
 configMapGenerator:
