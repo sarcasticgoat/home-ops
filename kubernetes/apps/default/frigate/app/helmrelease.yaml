@@ -62,7 +62,7 @@ spec:
             enabled: true
             port: 8554
     probes:
-      liveness: &probes
+      liveness: &probe
         enabled: true
         custom: true
         spec:
@@ -73,7 +73,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 1
           failureThreshold: 3
-      readiness: *probes
+      readiness: *probe
       startup:
         enabled: false
     ingress:
@@ -114,7 +114,7 @@ spec:
         enabled: true
         type: nfs
         server: ${NAS_HOSTNAME}
-        path: /mnt/user/NFS
+        path: /mnt/user/NFS/frigate
         mountPath: /media
       cache:
         enabled: true
