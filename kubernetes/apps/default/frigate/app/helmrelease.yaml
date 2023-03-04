@@ -124,7 +124,7 @@ spec:
         enabled: true
         type: nfs
         server: ${NAS_HOSTNAME}
-        path: /mnt/zpool-mirror/frigate # /mnt/user/NFS/frigate
+        path: /mnt/zpool-mirror # /mnt/user/NFS/frigate
         mountPath: /media
       cache:
         enabled: true

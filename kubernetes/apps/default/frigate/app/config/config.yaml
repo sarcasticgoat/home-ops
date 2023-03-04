@@ -37,7 +37,7 @@ snapshots:
     default: 14
 
 record:
-  enabled: false
+  enabled: true
   retain:
     days: 3
     mode: all
@@ -82,7 +82,7 @@ cameras:
       width: 1280
       height: 720
       fps: 10
-      enabled: false
+      enabled: true
 
     # detect:
     #   width: 2592
