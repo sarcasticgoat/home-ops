@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./cilium/ks.yaml
+  #% if bootstrap_distribution == "talos" %#
+  - ./kubelet-csr-approver/ks.yaml
+  #% endif %#
+  - ./metrics-server/ks.yaml
+  #% if (bootstrap_distribution == "k0s" or bootstrap_distribution == "talos") and spegel.enabled | default(false) %#
+  - ./spegel/ks.yaml
+  #% endif %#
