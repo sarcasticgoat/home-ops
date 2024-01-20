@@ -55,7 +55,7 @@ spec:
             - name: config
               accessMode: ReadWriteOnce
               size: 2Gi
-              storageClass: rook-ceph
+              storageClass: ceph-filesystem
               globalMounts:
                 - path: /config
 
