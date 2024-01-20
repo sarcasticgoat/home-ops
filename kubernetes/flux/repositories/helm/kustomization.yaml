@@ -9,17 +9,20 @@ resources:
   - ./coredns.yaml
   - ./csi-driver-nfs.yaml
   - ./descheduler.yaml
+  - ./democratic-csi.yaml
   - ./external-dns.yaml
   - ./grafana.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
+  - ./kubernetes-sigs-nfd.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml
   - ./piraeus.yaml
   - ./postfinance.yaml
   - ./prometheus-community.yaml
+  - ./rook-ceph.yaml
   - ./stakater.yaml
   - ./weave-gitops.yaml
   - ./xenitab.yaml
