@@ -1,11 +1,11 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: rook-ceph-cluster
+  namespace: rook-ceph
 spec:
-  interval: 30m
+  interval: 15m
   chart:
     spec:
       chart: rook-ceph-cluster
@@ -14,74 +14,81 @@ spec:
         kind: HelmRepository
         name: rook-ceph
         namespace: flux-system
+  install:
+    createNamespace: true
+    remediation: # perform remediation when helm install fails
+      retries: 6
+  upgrade:
+    remediation: # perform remediation when helm upgrade fails
+      retries: 6
+      remediateLastFailure: true # remediate the last failure, when no retries remain
+    cleanupOnFail: true
   values:
     toolbox:
-      enabled: false
-
+      enabled: true
     monitoring:
       enabled: true
       createPrometheusRules: true
-
     configOverride: |
       [global]
       bdev_enable_discard = true
       bdev_async_discard = true
-
+      osd_class_update_on_start = false
     cephClusterSpec:
-      network:
-        provider: host
-
       resources:
         mgr:
+          limits:
+            memory: "1Gi"
           requests:
-            cpu: "125m"
+            cpu: "50m"
             memory: "512Mi"
+        mon:
           limits:
             memory: "2Gi"
-        mon:
           requests:
-            cpu: "49m"
-            memory: "512Mi"
-          limits:
+            cpu: "50m"
             memory: "1Gi"
         osd:
-          requests:
-            cpu: "442m"
-            memory: "2Gi"
           limits:
-            memory: "6Gi"
+            memory: "4Gi"
+          requests:
+            cpu: "50m"
+            memory: "4Gi"
+        prepareosd:
+          limits:
+            memory: "900Mi"
+          requests:
+            cpu: "50m"
+            memory: "50Mi"
         mgr-sidecar:
-          requests:
-            cpu: "49m"
-            memory: "128Mi"
           limits:
-            memory: "256Mi"
+            memory: "100Mi"
+          requests:
+            cpu: "10m"
+            memory: "40Mi"
         crashcollector:
-          requests:
-            cpu: "15m"
-            memory: "64Mi"
           limits:
-            memory: "64Mi"
+            memory: "60Mi"
+          requests:
+            cpu: "3m"
+            memory: "60Mi"
         logcollector:
-          requests:
-            cpu: "100m"
-            memory: "100Mi"
           limits:
             memory: "1Gi"
+          requests:
+            cpu: "10m"
+            memory: "100Mi"
         cleanup:
-          requests:
-            cpu: "250m"
-            memory: "100Mi"
           limits:
             memory: "1Gi"
-
+          requests:
+            cpu: "10m"
+            memory: "100Mi"
       crashCollector:
         disable: false
-
       dashboard:
         enabled: true
         urlPrefix: /
-
       storage:
         useAllNodes: false
         useAllDevices: false
@@ -97,19 +104,21 @@ spec:
           - name: "k8s-2"
             devices:
               - name: "/dev/disk/by-id/nvme-INTEL_SSDPEKNU010TZ_PHKA151607ZQ1P0B"
-
     ingress:
       dashboard:
         ingressClassName: "internal"
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          hajimari.io/appName: "Rook"
+          hajimari.io/icon: mdi:chess-rook
         host:
-          name: &host rook.${SECRET_DOMAIN}
+          name: &host "rook.${SECRET_DOMAIN}"
           path: "/"
         tls:
           - hosts:
               - *host
-
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: false
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -132,13 +141,6 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
-
-    cephBlockPoolsVolumeSnapshotClass:
-      enabled: true
-      name: csi-ceph-blockpool
-      isDefault: false
-      deletionPolicy: Delete
-
     cephFileSystems:
       - name: ceph-filesystem
         spec:
@@ -153,11 +155,12 @@ spec:
             activeCount: 1
             activeStandby: true
             resources:
-              requests:
-                cpu: "35m"
-                memory: "1Gi"
               limits:
-                memory: "3Gi"
+                # cpu: "500m"
+                memory: "4Gi"
+              requests:
+                cpu: "1000m"
+                memory: "4Gi"
         storageClass:
           enabled: true
           isDefault: false
@@ -173,13 +176,6 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
-
-    cephFileSystemVolumeSnapshotClass:
-      enabled: true
-      name: csi-ceph-filesystem
-      isDefault: false
-      deletionPolicy: Delete
-
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -197,8 +193,8 @@ spec:
             port: 80
             resources:
               requests:
-                cpu: 100m
-                memory: 256Mi
+                cpu: 1000m
+                memory: 1Gi
               limits:
                 memory: 2Gi
             instances: 1
