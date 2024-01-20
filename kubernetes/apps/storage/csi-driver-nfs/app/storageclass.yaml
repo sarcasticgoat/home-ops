@@ -1,0 +1,48 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "truenas"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: "nas2.int.qhoward.net"
+  share: "/mnt/zpool-mirror"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions: ["hard", "noatime"]
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "frigate"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: "nas2.int.qhoward.net"
+  share: "/mnt/zpool-mirror/frigate"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions: ["hard", "noatime"]
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "backups"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: "nas2.int.qhoward.net"
+  share: "/mnt/zpool-mirror/backups"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions: ["hard", "noatime"]
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "data"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: "nas2.int.qhoward.net"
+  share: "/mnt/zpool-mirror/data"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions: ["hard", "noatime"]

@@ -1,0 +1,25 @@
+---
+kubernetes:
+  children:
+    master:
+      hosts:
+        "k8s-3":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.13"
+        "k8s-4":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.14"
+        "k8s-5":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.15"
+    worker:
+      hosts:
+        "k8s-0":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.10"
+        "k8s-1":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.11"
+        "k8s-2":
+          ansible_user: "quin"
+          ansible_host: "192.168.101.12"
