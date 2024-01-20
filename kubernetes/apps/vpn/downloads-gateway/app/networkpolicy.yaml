@@ -18,7 +18,7 @@ spec:
         - 0.0.0.0/0
       toPorts:
         - ports:
-            - port: ${DOWNLOADS_VPN_PORT}
+            - port: "${DOWNLOADS_VPN_PORT}"
               protocol: UDP
     - toEntities:
         - cluster
