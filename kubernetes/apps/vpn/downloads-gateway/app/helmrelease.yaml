@@ -50,12 +50,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: downloads-gateway
-                key: WIREGUARD_ADDRESSES
+                key: VPN_SERVER_ADDRESSES
           - name: WIREGUARD_PRIVATE_KEY
             valueFrom:
               secretKeyRef:
                 name: downloads-gateway
-                key: WIREGUARD_PRIVATE_KEY
+                key: VPN_WIREGUARD_PRIVATE_KEY
 
         securityContext:
           capabilities:
