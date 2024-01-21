@@ -82,6 +82,10 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [10000]
+
+    podAnnotations:
+      setGateway: true
+
     service:
       main:
         ports:
