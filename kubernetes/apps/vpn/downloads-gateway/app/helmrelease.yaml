@@ -19,7 +19,7 @@ spec:
     image:
       repository: ghcr.io/angelnu/pod-gateway
       tag: v1.10.0@sha256:d728eac85f750b37c96a0dafd038561ea4b8035857802be1128ea9b19c61e181
-    DNS: 172.16.1.1
+    DNS: ${COREDNS_ADDR}
     addons:
       vpn:
         enabled: true
@@ -67,7 +67,7 @@ spec:
 
 
     podAnnotations:
-      configmap.reloader.stakater.com/reload: *app
+      configmap.reloader.stakater.com/reload: downloads-gateway-pod-gateway
       secret.reloader.stakater.com/reload: *app
 
     publicPorts:
@@ -88,12 +88,12 @@ spec:
       VPN_BLOCK_OTHER_TRAFFIC: true
       VPN_INTERFACE: wg0
       VPN_TRAFFIC_PORT: '51820'
-      VXLAN_ID: 43
+      VXLAN_ID: 42
       VXLAN_IP_NETWORK: 172.16.1
 
     webhook:
       gatewayAnnotation: setGateway
-      gatewayDefault: false
+      gatewayDefault: true
       gatewayLabel: setGateway
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
