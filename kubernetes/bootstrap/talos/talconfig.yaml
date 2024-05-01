@@ -36,6 +36,40 @@ nodes:
             gateway: "192.168.101.1"
         vip:
           ip: "192.168.101.100"
+  - hostname: "k8s-1"
+    ipAddress: "192.168.101.11"
+    installDisk: "/dev/sdb"
+    talosImageURL: factory.talos.dev/installer/f0bab41395003b80e28f0d80c8fff4b264243942ad9b29ba2280d529eb2045df
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "54:bf:64:a0:89:85"
+        dhcp: false
+        addresses:
+          - "192.168.101.11/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.101.1"
+        vip:
+          ip: "192.168.101.100"
+  - hostname: "k8s-2"
+    ipAddress: "192.168.101.12"
+    installDisk: "/dev/sdb"
+    talosImageURL: factory.talos.dev/installer/f0bab41395003b80e28f0d80c8fff4b264243942ad9b29ba2280d529eb2045df
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "54:bf:64:a0:87:03"
+        dhcp: false
+        addresses:
+          - "192.168.101.12/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.101.1"
+        vip:
+          ip: "192.168.101.100"
 
 patches:
   # Configure containerd
