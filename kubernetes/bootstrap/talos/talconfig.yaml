@@ -8,7 +8,7 @@ kubernetesVersion: v1.30.0
 clusterName: &cluster home-kubernetes
 endpoint: https://192.168.101.100:6443
 clusterPodNets:
-  - "10.69.0.0/16"
+  - "10.70.0.0/16"
 clusterSvcNets:
   - "10.96.0.0/16"
 additionalApiServerCertSans: &sans
@@ -21,24 +21,21 @@ cniConfig:
 nodes:
   - hostname: "k8s-0"
     ipAddress: "192.168.101.10"
-    installDiskSelector:
-      serial: "ata-INTEL_SSDSC2KF256G8_SATA_256GB_PHLA807400C5256CGN"
+    installDisk: "/dev/sdb"
     talosImageURL: factory.talos.dev/installer/f0bab41395003b80e28f0d80c8fff4b264243942ad9b29ba2280d529eb2045df
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "54:bf:64:a0:d0:e5"
         dhcp: false
-        vlans:
-          - vlanId: 101
-            addresses:
-              - "192.168.101.10/24"
-            mtu: 1500
-            routes:
-              - network: 0.0.0.0/0
-                gateway: "192.168.101.1"
-            vip:
-              ip: "192.168.101.100"
+        addresses:
+          - "192.168.101.10/24"
+        mtu: 1500
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.101.1"
+        vip:
+          ip: "192.168.101.100"
 
 patches:
   # Configure containerd
@@ -87,6 +84,7 @@ patches:
       network:
         nameservers:
           - 192.168.101.1
+          - 1.1.1.1
 
   # Configure NTP
   - |-
