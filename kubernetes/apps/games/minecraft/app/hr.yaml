@@ -1,0 +1,109 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app minecraft
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://itzg.github.io/minecraft-server-charts/
+      chart: minecraft
+      version: 4.17.0
+      sourceRef:
+        kind: HelmRepository
+        name: minecraft-server
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: ghcr.io/itzg/minecraft-server
+      tag: java21
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        memory: 4Gi
+    securityContext:
+      runAsUser: &uid 568
+      fsGroup: *uid
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
+    startupProbe:
+      enabled: false
+    extraEnv:
+      TZ: "America/New_York"
+      ENABLE_AUTOPAUSE: FALSE # Doesn't work in Kubes
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
+    serviceAnnotations:
+      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
+    minecraftServer:
+      eula: true
+      version: 1.20.6
+      type: SPIGOT
+      forceReDownload: true
+      jvmXXOpts: "-XX:MaxRAMPercentage=75"
+      memory: ""
+      difficulty: normal
+      spawnProtection: 0
+      maxTickTime: -1
+      gameMode: survival
+      pvp: false
+      onlineMode: true
+      ops: "PaperWadian,bella1686,Q123"
+      motd: "PimpDaddyE"
+      worldSaveName: Ethan
+      viewDistance: 12
+      spigetResources:
+        - 36618 #Prom Exporter
+      rcon:
+        enabled: true
+        password: "${MINECRAFT_RCON_PASSWORD}"
+      serviceType: LoadBalancer
+      extraPorts:
+        - name: metrics
+          containerPort: 9225
+          protocol: TCP
+          service:
+            enabled: true
+            embedded: false
+            type: ClusterIP
+            port: 9225
+          ingress:
+            enabled: false
+        - name: map
+          containerPort: 8123
+          protocol: TCP
+          service:
+            enabled: true
+            embedded: false
+            type: ClusterIP
+            port: 8123
+          ingress:
+            ingressClassName: external
+            enabled: true
+            annotations:
+              external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+            hosts:
+              - host: &host "minecraft-vanilla.${SECRET_DOMAIN}"
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - hosts:
+                  - *host
