@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rustplusplus-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rustplusplus
+  template:
+    metadata:
+      labels:
+        app: rustplusplus
+    spec:
+      containers:
+      - name: rustplusplus
+        image: ghcr.io/alexemanuelol/rustplusplus:v1.16.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: RPP_DISCORD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: rustplusplus-secret
+              key: RPP_DISCORD_CLIENT_ID
+        - name: RPP_DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rustplusplus-secret
+              key: RPP_DISCORD_TOKEN
+        volumeMounts:
+        - name: rustplusplus-volume
+          mountPath: /app/credentials
+          subPath: credentials
+        - name: rustplusplus-volume
+          mountPath: /app/instances
+          subPath: instances
+        - name: rustplusplus-volume
+          mountPath: /app/logs
+          subPath: logs
+        - name: rustplusplus-volume
+          mountPath: /app/maps
+          subPath: maps
+      volumes:
+      - name: rustplusplus-volume
+        persistentVolumeClaim:
+          claimName: rustplusplus-pvc
