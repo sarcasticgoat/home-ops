@@ -1,22 +1,26 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-  "name": "Flux Cluster Template",
-  "image": "ghcr.io/onedr0p/cluster-template/devcontainer:base",
-  "postCreateCommand": {
-    "setup": "bash ${containerWorkspaceFolder}/.devcontainer/postCreateCommand.sh"
+  "name": "Flux Cluster Template (CI)",
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
   },
-  "postStartCommand": {
-    "git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+  "features": {
+    "./features": {}
   },
-  // Podman below here are all podman settings
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,Z",
-  "workspaceFolder": "/workspace",
-  "runArgs": [
-    "--userns=keep-id:uid=1000,gid=1000"
-   ],
-   "containerUser": "vscode",
-   "updateRemoteUserUID": true,
-   "containerEnv": {
-     "HOME": "/home/vscode"
-   }
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/usr/bin/fish"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "fish"
+      },
+      "extensions": [
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
 }
