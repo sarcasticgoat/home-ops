@@ -10,6 +10,7 @@ resources:
   - ./jetstack.yaml
   - ./metrics-server.yaml
   - ./minecraft-server.yaml
+  - ./node-feature-discovery.yaml
   - ./openebs.yaml
   - ./postfinance.yaml
   - ./rook-ceph.yaml
