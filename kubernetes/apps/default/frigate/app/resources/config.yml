@@ -1,0 +1,135 @@
+---
+logger:
+  default: info
+  # logs:
+  #   frigate.record: debug
+
+mqtt:
+  enabled: False
+
+database:
+  path: /data/frigate.db
+
+detectors:
+  coral:
+    type: edgetpu
+    device: usb
+
+ffmpeg:
+  global_args: ["-hide_banner", "-loglevel", "warning"]
+  hwaccel_args: preset-intel-qsv-h264
+  output_args:
+    record: preset-record-ubiquiti
+
+snapshots:
+  enabled: true
+  timestamp: false
+  bounding_box: true
+  retain:
+    default: 1
+
+record:
+  enabled: true
+  retain:
+    days: 14
+    mode: all
+  events:
+    retain:
+      default: 30
+      mode: active_objects
+
+objects:
+  track: ["person", "car", "dog", "cat"]
+  filters:
+    person:
+      min_area: 5000
+      max_area: 100000
+      threshold: 0.7
+
+# go2rtc:
+#   streams:
+#     frigate_porch_hq: rtspx://192.168.1.1:7441/VwpGq6jdn21y2Bjg
+#     frigate_porch_lq: rtspx://192.168.1.1:7441/pjt5fr9cOIAUTGpq
+
+cameras:
+  frontporch_cam01:
+    ffmpeg:
+      output_args:
+        record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
+      inputs:
+        - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@cam01.int.${FRIGATE_DOMAIN}:554/cam/realmonitor?channel=1&subtype=0
+          roles:
+            - detect
+            - rtmp
+    detect:
+      width: 2592
+      height: 1944
+      enabled: True
+      max_disappeared: 25
+    zones:
+      frontdoor:
+        coordinates: 1966,878,2173,802,2356,270,2585,403,2592,814,2585,1246,2578,1241
+        objects:
+           - person
+           - dog
+           - cat
+      frontporch:
+        coordinates: 165,1374,419,1942,2583,1942,2581,1250,2015,904,1713,639,89,1129
+        objects:
+           - person
+           - dog
+           - cat
+      frontyard: 
+        coordinates: 82,1120,0,616,876,394,1627,343,2014,332,2283,377,2167,794,1977,861,1715,643,1030,840
+        objects:
+           - person
+           - dog
+           - cat
+      frontstreet:
+        coordinates: 11,611,0,359,528,205,1236,169,1789,189,2144,245,2317,288,2306,309,2286,379,1994,340,1527,353,1012,387
+        objects:
+           - person 
+           - car
+    record:
+      enabled: True
+      retain:
+        days: 14
+      events:
+        objects:
+          - person
+        retain:
+          default: 10
+          objects:
+            person: 30
+    snapshots:
+  # Optional: Enable writing jpg snapshot to /media/frigate/clips (default: shown below)
+  # This value can be set via MQTT and will be updated in startup based on retained value
+      enabled: True
+  # Optional: print a timestamp on the snapshots (default: shown below)
+      timestamp: False
+  # Optional: draw bounding box on the snapshots (default: shown below)
+      bounding_box: True
+  # Optional: crop the snapshot (default: shown below)
+      crop: True
+  # Optional: height to resize the snapshot to (default: original size)
+     # height: 175
+  # Optional: Restrict snapshots to objects that entered any of the listed zones (default: no required zones)
+      required_zones: []
+  # Optional: Camera override for retention settings (default: global values)
+      retain:
+    # Required: Default retention days (default: shown below)
+         default: 10
+    # Optional: Per object retention days
+         objects:
+           person: 15
+           car: 15        
+       
+# objects:
+#   track:
+#     - person
+#     - car
+#     - dog
+#     - cat
+#     - motorcycle
+#     - truck
+#     - bus
