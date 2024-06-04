@@ -17,9 +17,9 @@ detectors:
 
 ffmpeg:
   global_args: ["-hide_banner", "-loglevel", "warning"]
-  hwaccel_args: preset-intel-qsv-h264
+  hwaccel_args: preset-vaapi
   output_args:
-    record: preset-record-ubiquiti
+    record: preset-record-generic-audio-copy
 
 snapshots:
   enabled: true
@@ -42,7 +42,7 @@ objects:
   track: ["person", "car", "dog", "cat"]
   filters:
     person:
-      min_area: 5000
+      min_area: 2000
       max_area: 100000
       threshold: 0.7
 
@@ -54,8 +54,6 @@ objects:
 cameras:
   frontporch_cam01:
     ffmpeg:
-      output_args:
-        record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
       inputs:
         - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@cam01.int.${FRIGATE_DOMAIN}:554/cam/realmonitor?channel=1&subtype=0
           roles:
@@ -90,17 +88,7 @@ cameras:
         objects:
            - person 
            - car
-    record:
-      enabled: True
-      retain:
-        days: 14
-      events:
-        objects:
-          - person
-        retain:
-          default: 10
-          objects:
-            person: 30
+
     snapshots:
   # Optional: Enable writing jpg snapshot to /media/frigate/clips (default: shown below)
   # This value can be set via MQTT and will be updated in startup based on retained value
