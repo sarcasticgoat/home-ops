@@ -27,8 +27,8 @@ spec:
       namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    # - name: volsync
-    #   namespace: volsync-system
+    - name: volsync
+      namespace: volsync-system
   values:
     controllers:
       frigate:
@@ -123,7 +123,7 @@ spec:
           - path: /dev/bus/usb
       media:
         type: nfs
-        server: nas.${FRIGATE_DOMAIN}
+        server: ${NAS_IP}
         path: /zpool-mirror/
         globalMounts:
           - path: /media
