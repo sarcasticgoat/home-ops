@@ -2,12 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app factorio-vanilla
+  name: &app factorio-railworld
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
+  
 spec:
-  path: ./kubernetes/apps/games/factorio/vanilla/
+  targetNamespace: games
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/games/factorio/railworld
   prune: true
   wait: false
   sourceRef:
@@ -20,5 +23,3 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
-      VOLSYNC_STORAGECLASS: ceph-block
-      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
