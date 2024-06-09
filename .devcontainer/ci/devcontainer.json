@@ -22,5 +22,16 @@
         "redhat.vscode-yaml"
       ]
     }
-  }
+  },
+  // Podman below here are all podman settings
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,Z",
+  "workspaceFolder": "/workspace",
+  "runArgs": [
+    "--userns=keep-id:uid=1000,gid=1000"
+   ],
+   "containerUser": "vscode",
+   "updateRemoteUserUID": true,
+   "containerEnv": {
+     "HOME": "/home/vscode"
+   }
 }
