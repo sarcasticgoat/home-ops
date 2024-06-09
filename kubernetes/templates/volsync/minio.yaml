@@ -11,7 +11,6 @@ stringData:
   AWS_ACCESS_KEY_ID: '${MINIO_ACCESS_KEY}'
   AWS_SECRET_ACCESS_KEY: '${MINIO_SECRET_KEY}'
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationsource_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
@@ -39,11 +38,10 @@ spec:
       daily: 7
       weekly: 5
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: "${APP}-dst"
+  name: "${APP}"
 spec:
   trigger:
     manual: restore-once
@@ -57,7 +55,7 @@ spec:
     storageClassName: "${VOLSYNC_STORAGECLASS:-ceph-block}"
     accessModes: ["${VOLSYNC_ACCESSMODES:-ReadWriteOnce}"]
     capacity: "${VOLSYNC_CAPACITY}"
-    # moverSecurityContext:
-    #   runAsUser: 568
-    #   runAsGroup: 568
-    #   fsGroup: 568
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
