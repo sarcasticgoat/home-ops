@@ -1,5 +1,5 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app factorio-vanilla
@@ -43,17 +43,11 @@ spec:
           copy-configmap:
             image: 
               repository: busybox
-              tag: stable@sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7
+              tag: stable@sha256:6d9ac9237a84afe1516540f40a0fafdc86859b2141954b4d643af7066d598b74
             command:
               - "sh"
               - "-c"
               - "cp -r -f /helmconfig/* /factorio/*"
-
-            # securityContext:
-            #   runAsUser: 568
-            #   runAsGroup: 568
-            #   fsGroup: 568
-            #   fsGroupChangePolicy: "OnRootMismatch"
 
     service:
       main:
