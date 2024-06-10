@@ -16,7 +16,7 @@ kind: ReplicationSource
 metadata:
   name: "${APP}"
 spec:
-  sourcePVC: "${APP}-src"
+  sourcePVC: "${VOLSYNC_CLAIM:-${APP}}"
   trigger:
     schedule: "0 * * * *"
   restic:
