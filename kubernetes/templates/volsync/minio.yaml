@@ -16,7 +16,7 @@ kind: ReplicationSource
 metadata:
   name: "${APP}"
 spec:
-  sourcePVC: "${APP}"
+  sourcePVC: "${APP}-src"
   trigger:
     schedule: "0 * * * *"
   restic:
@@ -41,7 +41,7 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: "${APP}"
+  name: "${APP}-dest"
 spec:
   trigger:
     manual: restore-once
