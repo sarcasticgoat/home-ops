@@ -1,0 +1,86 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app baby-buddy
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      baby-buddy:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: lscr.io/linuxserver/babybuddy
+              tag: 2.4.0@sha256:1497b2688578586c7e6348f3b19b71c0f6760f2ee5d030c84d72c62456ff70ce
+            env:
+              - name: TZ
+                value: ${TIMEZONE}
+              # - name: EMAIL_HOST
+              #   value: smtp-relay.network.svc.cluster.local.
+              # - name: EMAIL_PORT
+              #   value: "2525"
+              # - name: EMAIL_USE_TLS
+              #   value: "false"
+              - name: DJANGO_SETTINGS_MODULE
+                value: babybuddy.settings.base
+              - name: DB_ENGINE
+                value: django.db.backends.postgresql
+              - name: DB_HOST
+                value: postgres16-rw.database.svc.cluster.local.
+              - name: DB_NAME
+                value: babybuddy
+              - name: DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: baby-buddy-secret
+                    key: PG_USERNAME
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: baby-buddy-secret
+                    key: PG_PASSWORD
+            envFrom:
+              - secretRef:
+                  name: baby-buddy-secret
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 8000
+    ingress:
+      internal:
+        className: internal
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+    persistence:
+      config:
+        enabled: true
+        existingClaim: baby-buddy
+        globalMounts:
+          - path: /config
