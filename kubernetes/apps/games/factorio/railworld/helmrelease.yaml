@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: factoriotools/factorio
-              tag: stable@sha256:56c6a6ea3df53f928b79a3fc4f30f24e0b7e3ed20d8df390dc40a020a94b0dd4
+              tag: stable@sha256:1cc5b516da66614ec1e2a9088755f58940d2ea194fc6eec75483034f60a21607
             env:
               PORT: &port 34197
               RCON_PORT: &rcon 27015
