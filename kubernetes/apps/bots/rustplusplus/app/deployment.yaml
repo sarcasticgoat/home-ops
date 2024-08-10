@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rustplusplus
-        image: ghcr.io/alexemanuelol/rustplusplus:v1.17.0
+        image: ghcr.io/alexemanuelol/rustplusplus:v1.18.0
         ports:
         - containerPort: 8080
         env:
