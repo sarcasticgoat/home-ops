@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ./factorio/ks.yaml
   - ./namespace.yaml
-  - ./minecraft/ks.yaml
+  # - ./minecraft/ks.yaml
