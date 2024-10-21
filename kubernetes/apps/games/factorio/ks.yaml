@@ -2,15 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app factorio-railworld
+  name: &app factorio-spaceage
   namespace: flux-system
-  
+
 spec:
   targetNamespace: games
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/games/factorio/railworld
+  path: ./kubernetes/apps/games/factorio/spaceage
   prune: true
   wait: false
   sourceRef:

@@ -1,0 +1,92 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app factorio-spaceage
+  namespace: games
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      factorio-spaceage:
+        type: statefulset
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: factoriotools/factorio
+              tag: stable-2.0.8
+            env:
+              PORT: &port 34197
+              RCON_PORT: &rcon 27015
+              BIND: "0.0.0.0"
+              SAVE_NAME: "spaceage"
+              LOAD_LATEST_SAVE: false
+
+        # initContainers:
+        #   copy-configmap:
+        #     image:
+        #       repository: busybox
+        #       tag: stable@sha256:6d9ac9237a84afe1516540f40a0fafdc86859b2141954b4d643af7066d598b74
+        #     command:
+        #       - "sh"
+        #       - "-c"
+        #       - "cp -r -f /helmconfig/* /factorio/;chown -R factorio:factorio /factorio"
+
+    service:
+      main:
+        controller: *app
+        enabled: true
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        ports:
+          server:
+            enabled: true
+            port: *port
+            protocol: UDP
+          rcon:
+            enabled: true
+            primary: true
+            port: *rcon
+            protocol: TCP
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: factorio-spaceage-config-v1
+        globalMounts:
+          - path: /factorio
+      helmconfig:
+        enabled: true
+        type: nfs
+        server: ${NAS_IP}
+        path: /zpool-mirror/backups/games/factorio/spaceage
+        globalMounts:
+          - path: /helmconfig
+    startupProbe:
+      enabled: true
+      failureThreshold: 30
+      periodSeconds: 10
+    resources:
+      requests:
+        cpu: 16m
+        memory: 1555M
+      limits:
+        memory: 8006M
