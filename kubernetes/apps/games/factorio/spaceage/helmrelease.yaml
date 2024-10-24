@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: factoriotools/factorio
-              tag: stable-2.0.9
+              tag: stable-2.0.10
             env:
               PORT: &port 34197
               RCON_PORT: &rcon 27015
