@@ -68,6 +68,11 @@ spec:
             protocol: TCP
 
     persistence:
+      newpv:
+        enabled: true
+        existingClaim: factorio-spaceage
+        globalMounts:
+          - path: /newfactorio
       config:
         enabled: true
         existingClaim: factorio-spaceage-config-v1
