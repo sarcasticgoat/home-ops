@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: factoriotools/factorio
-              tag: stable-2.0.14
+              tag: 2.0.14
             env:
               PORT: &port 34197
               RCON_PORT: &rcon 27015
@@ -40,6 +40,7 @@ spec:
               SAVE_NAME: "spaceage"
               LOAD_LATEST_SAVE: false
               UPDATE_MODS_ON_START: true
+              MOD_LIST_MAP: "space-age elevated-rails quality flib helmod MaxRateCalculator RateCalculator Todo-List"
             envFrom:
               - secretRef:
                   name: factorio-secret
