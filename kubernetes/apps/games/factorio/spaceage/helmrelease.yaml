@@ -37,10 +37,9 @@ spec:
               PORT: &port 34197
               RCON_PORT: &rcon 27015
               BIND: "0.0.0.0"
-              SAVE_NAME: "spaceage"
+              SAVE_NAME: "spaceage-plusmods"
               LOAD_LATEST_SAVE: false
               UPDATE_MODS_ON_START: true
-              MOD_LIST_MAP: "space-age elevated-rails quality flib helmod MaxRateCalculator RateCalculator Todo-List"
             envFrom:
               - secretRef:
                   name: factorio-secret
@@ -53,7 +52,7 @@ spec:
         #     command:
         #       - "sh"
         #       - "-c"
-        #       - "cp -r -f /helmconfig/* /factorio/;chown -R factorio:factorio /factorio"
+        #       - "cp -r -f /helmconfig/mods/ /factorio/;chown -R 845:845 /factorio"
 
     service:
       main:
