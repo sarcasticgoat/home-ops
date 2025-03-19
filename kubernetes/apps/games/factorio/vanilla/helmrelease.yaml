@@ -43,7 +43,7 @@ spec:
           copy-configmap:
             image: 
               repository: busybox
-              tag: stable@sha256:82742949a3709938cbeb9cec79f5eaf3e48b255389f2dcedf2de29ef96fd841c
+              tag: stable@sha256:5f4d09ff2b446d5a28d563f49d6a107ce26278d4bdba2cac727b07acca7970f1
             command:
               - "sh"
               - "-c"
