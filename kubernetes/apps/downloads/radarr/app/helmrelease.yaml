@@ -81,6 +81,9 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
+        annotations:
+          tailscale.com/expose: "true"
+          tailscale.com/hostname: "{{ .Release.Name }}.${SECRET_DOMAIN}"
         controller: radarr
         ports:
           http:

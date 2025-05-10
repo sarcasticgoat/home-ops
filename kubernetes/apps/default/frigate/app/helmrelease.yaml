@@ -88,15 +88,20 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
-        className: internal
+          # external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+          tailscale.com/expose: "true"
+          tailscale.com/hostname: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        className: nginx-tailscale
         hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
       config:
         existingClaim: frigate-config

@@ -1,0 +1,11 @@
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: ts-router
+spec:
+  hostname: lan-router
+  subnetRouter:
+    advertiseRoutes:
+      - "192.168.10.0/24"
+      - "192.168.5.0/24"
+  exitNode: true

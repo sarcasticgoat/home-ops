@@ -24,3 +24,4 @@ resources:
   - ./spegel.yaml
   - ./stakater.yaml
   - ./stevehipwell.yaml
+  - ./tailscale.yaml
